@@ -1,0 +1,7 @@
+numpy
+pandas
+networkx
+nodevectors
+xgboost
+fucc
+scikit-learn
