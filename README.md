@@ -9,3 +9,6 @@ command:
 ``$ pip install -r requirements.txt``
 
 To guarantee that you have the right package versions, you can use Anaconda to set up a virtual environment and install the dependencies from ``requirements.txt``.
+
+
+### Running the code
