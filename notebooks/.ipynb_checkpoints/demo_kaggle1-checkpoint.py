@@ -6,11 +6,11 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.11.3
+#       jupytext_version: 1.6.0
 #   kernelspec:
-#     display_name: RLFraud
+#     display_name: fucc
 #     language: python
-#     name: rlfraud
+#     name: fucc
 # ---
 
 # # Demo
