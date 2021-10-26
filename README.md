@@ -33,6 +33,9 @@ There are two notebooks:
 The first notebook contains the deepwalk approach with inductive mean pooling extension. The embeddings are used to train an XGBoost classification model. 
 The second notebook contains the inductive pagerank approach [2] and serves as a benchmark. More details on this benchmark can be found in [2].
 
+Both notebook files can be opened with Jupyter Notebook
+``jupyter notebook``
+
 ## References
 
 [1] Van Belle Rafael, De Weerdt Jochen. "A novel network-based credit card fraud detection approach using noderepresentation learning."
