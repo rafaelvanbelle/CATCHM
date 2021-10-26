@@ -34,9 +34,11 @@ The first notebook contains the deepwalk approach with inductive mean pooling ex
 The second notebook contains the inductive pagerank approach [2] and serves as a benchmark. More details on this benchmark can be found in [2].
 
 Both notebook files can be opened with Jupyter Notebook
+
 ``jupyter notebook``
 
 ## References
 
 [1] Van Belle Rafael, De Weerdt Jochen. "A novel network-based credit card fraud detection approach using noderepresentation learning."
+
 [2] Van Vlasselaer, Véronique, Cristián Bravo, Olivier Caelen, Tina Eliassi-Rad, Leman Akoglu, Monique Snoeck, and Bart Baesens. 2015. “APATE: A Novel Approach for Automated Credit Card Transaction Fraud Detection Using Network-Based Extensions.” Decision Support Systems 75 (July): 38–48.
