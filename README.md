@@ -1,6 +1,8 @@
 # RL Fraud
 Code repository for the paper: A novel network-based credit card fraud detection approach using node representation learning
 
+[![DOI](https://zenodo.org/badge/411611190.svg)](https://zenodo.org/badge/latestdoi/411611190)
+
 ## Requirements:
 
 The code has been tested under Python 3.6. The required packages can be installed using the following
