@@ -1,5 +1,5 @@
-# RL Fraud
-Code repository for the paper: A novel network-based credit card fraud detection approach using node representation learning
+# CATCHM
+Code repository for the paper: CATCHM: A novel network-based credit card fraud detection approach using node representation learning
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5654760.svg)](https://doi.org/10.5281/zenodo.5654760)
 
