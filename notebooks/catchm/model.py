@@ -1,5 +1,6 @@
 from sklearn.base import BaseEstimator, ClassifierMixin
 from catchm.embeddings import InductiveDeepwalk
+from sklearn.pipeline import Pipeline
 
 # SKLEARN CLASSIFIER
 class CatchM(ClassifierMixin, BaseEstimator):
@@ -19,6 +20,9 @@ class CatchM(ClassifierMixin, BaseEstimator):
     classes_ : ndarray, shape (n_classes,)
         The classes seen at :meth:`fit`.
     """
+    default_xgboost_params = {'eval_metric' = ['auc','aucpr', 'logloss'], 'n_estimators'=300, 'n_jobs'=8, 'learning_rate'=0.1, 'seed'=42, 'colsample_bytree' = 0.6, 'colsample_bylevel'=0.9, 'subsample' = 0.9}
+    
+    
     def __init__(self, dimensions, walk_len, walk_num, head_node_type = 'transfer', epochs=5, workers=1, window_size=5):
         self.dimensions = dimensions
         self.walk_len = walk_len
@@ -28,7 +32,7 @@ class CatchM(ClassifierMixin, BaseEstimator):
         self.workers = workers
         self.window_size = window_size
 
-    def fit(self, edgedict, y):
+    def fit(self, edgelist, y, xgboost_params={}):
         """A reference implementation of a fitting function for a classifier.
         Parameters
         ----------
@@ -43,13 +47,25 @@ class CatchM(ClassifierMixin, BaseEstimator):
         """
 
         # Create Inductive Deepwalk model
-        self.idw = InductiveDeepwalk(dimensions=128, walk_len=20, walk_num=10, head_node_type = 'transfer', epochs=5, workers=4, window_size=5)
-        self.idw.fit(edgedict)
+        fit_embeddings(self, edgelist)
         
         #-> XGBoost fit
+        fit_classifier(self, edgelist, y, xgboost_params)
         
         # Return the classifier
         return self
+
+    def fit_embeddings(self, edgelist)
+
+        self.embedder = InductiveDeepwalk(self.dimensions, self.walk_len, self.walk_num, self.head_node_type, self.epochs, self.workers, self.window_size)
+        self.embedder.fit(edgelist)
+    
+    def fit_classifier(self, edgelist, y, xgboost_params=default_xgboost_params)
+
+        self.classifier = xgb.XGBClassifier()
+        pipe = Pipeline([('embedder', self.embedder), ('model', self.classifier)])
+        pipe.fit(edgelist, y)
+
 
     def predict(self, X):
         """ A reference implementation of a prediction for a classifier.
@@ -64,8 +80,9 @@ class CatchM(ClassifierMixin, BaseEstimator):
             seen during fit.
         """
         #-> embedding predict
+        self.embedder.transform()
         #-> Xgboost predict
-
+        y_pred_proba = self.classifier.predict_proba()
         
         return 1
 
