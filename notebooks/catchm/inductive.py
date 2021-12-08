@@ -15,11 +15,14 @@ def inductive_pooling(edgelist, embeddings, G, workers, gamma=1000, dict_node=No
             avg_emb = None
         
         #if __name__ == '__main__':
+        result_list = [] 
         with Pool(workers) as p:
-            r = p.map(partial(inductive_pooling_chunk, embeddings=embeddings, G=G, average_embedding=avg_emb), np.array_split(edgearray, workers))
+            for result in tqdm(p.imap(partial(inductive_pooling_chunk, embeddings=embeddings, G=G, average_embedding=avg_emb), np.array_split(edgearray, workers)), total=len(np.array_split(edgearray, workers))):
+                result_list.append(result)
+            #r = tqdm(p.map(partial(inductive_pooling_chunk, embeddings=embeddings, G=G, average_embedding=avg_emb), np.array_split(edgearray, workers))
 
         new_embeddings = np.zeros((len(edgelist), embeddings.shape[1]))
-        for result_dict in r:
+        for result_dict in result_list:
             for id, emb in result_dict.items():
                 new_embeddings[int(id), : ] = emb
         
@@ -30,7 +33,7 @@ def inductive_pooling_chunk(edgearray, embeddings, G, gamma=1000, average_embedd
     #Create a container for the new embeddings
     new_embeddings = dict()
 
-    for row in tqdm(edgearray, total=edgearray.shape[0]):
+    for row in edgearray:
 
         transfer, sender, receiver = row
 

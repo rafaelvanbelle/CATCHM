@@ -9,6 +9,7 @@ import pandas as pd
 
 from catchm.inductive import inductive_pooling
 from catchm.network import create_network
+from catchm.utils import EpochLogger
 
 class InductiveDeepwalk(BaseEstimator, TransformerMixin):
     """ A template estimator to be used as a reference implementation.
@@ -28,15 +29,15 @@ class InductiveDeepwalk(BaseEstimator, TransformerMixin):
     >>> estimator.fit(X, y)
     TemplateEstimator()
     """
-    def __init__(self, dimensions, walk_len, walk_num, head_node_type = None, epochs=5, workers=1, window_size=5):
+    def __init__(self, dimensions, walk_len, walk_num, epochs=5, workers=1, window_size=5, verbose=0):
         self.dimensions = dimensions
         self.walk_len = walk_len
         self.walk_num = walk_num
         self.epochs = epochs
         self.workers = workers
         self.window_size = window_size
-        self.head_node_type = head_node_type
         self.first_fit = True
+        self.verbose = verbose
 
     def fit(self, X, y=None):
         """A reference implementation of a fitting function.
@@ -53,20 +54,28 @@ class InductiveDeepwalk(BaseEstimator, TransformerMixin):
             Returns self.
         """
 
+        if self.verbose > 0:
+            print("Parsing input into network format.")
+
         self.G = create_network(X)
         transfer_nodes = nx.get_node_attributes(self.G, "type")
         transfers = [k for k,v in transfer_nodes.items() if v=='transfer' ]
+
+        callbacks = None
+        if self.verbose > 0:
+            print("Running network representation algorithm.")
+            epochlogger = EpochLogger()
+            callbacks = [epochlogger]
 
         g2v = Node2Vec(
             n_components=self.dimensions,
             walklen = self.walk_len,
             epochs = self.walk_num,
-            w2vparams={'workers': self.workers, 'window': self.window_size}
+            w2vparams={'workers': self.workers, 'window': self.window_size, 'callbacks': callbacks}
         )
 
         g2v.fit(self.G)
         self.model = g2v.model
-        
         
         self.embeddings = np.zeros(shape=(len(transfers), self.dimensions))
        
@@ -95,10 +104,18 @@ class InductiveDeepwalk(BaseEstimator, TransformerMixin):
         check_is_fitted(self, 'is_fitted_')
         
         if self.first_fit:
+
+            if self.verbose > 0:
+                print("Retrieving embeddings for training data.")
+
             results = self.embeddings
             self.first_fit = False
 
         else:
+
+            if self.verbose > 0:
+                print("Running inductive pooling extension.")
+
             results = inductive_pooling(edgelist, embeddings=self.embeddings, G=self.G, workers=self.workers)
         
     

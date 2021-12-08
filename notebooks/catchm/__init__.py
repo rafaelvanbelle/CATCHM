@@ -1,3 +1,3 @@
-from .model import CatchM
+from .model import Catchm
 
-__all__ = ['CatchM']
+__all__ = ['Catchm']
