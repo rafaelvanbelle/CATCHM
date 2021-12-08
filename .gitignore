@@ -2,3 +2,5 @@
 *.gz
 transactions/
 .ipynb_checkpoints/
+*.pyc
+__pycache__/
