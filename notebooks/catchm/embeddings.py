@@ -61,7 +61,7 @@ class InductiveDeepwalk(BaseEstimator, TransformerMixin):
         transfer_nodes = nx.get_node_attributes(self.G, "type")
         transfers = [k for k,v in transfer_nodes.items() if v=='transfer' ]
 
-        callbacks = None
+        callbacks = []
         if self.verbose > 0:
             print("Running network representation algorithm.")
             epochlogger = EpochLogger()
@@ -71,6 +71,7 @@ class InductiveDeepwalk(BaseEstimator, TransformerMixin):
             n_components=self.dimensions,
             walklen = self.walk_len,
             epochs = self.walk_num,
+            verbose = self.verbose,
             w2vparams={'workers': self.workers, 'window': self.window_size, 'callbacks': callbacks}
         )
 
